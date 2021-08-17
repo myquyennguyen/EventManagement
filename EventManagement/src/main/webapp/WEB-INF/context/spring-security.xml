@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+  <http auto-config="true">
+    <intercept-url pattern="/home" access="hasRole('ROLE_ADMIN')" />
+    <access-denied-handler error-page="/403" />
+    <csrf disabled="true"/>
+    <headers>
+        	<frame-options policy="SAMEORIGIN" />
+       </headers>
+    <form-login login-page="/login" login-processing-url="/j_spring_security_login"
+      authentication-success-handler-ref="customSuccessHandler" authentication-failure-url="/login?error"
+      username-parameter="username" password-parameter="password" />
+ 
+    <logout logout-url="/j_spring_security_logout"
+      logout-success-url="/trang-chu" delete-cookies="JSESSIONID" />
+  </http>
+  <authentication-manager>
+    <authentication-provider user-service-ref="myUserDetailsService">
+    	<password-encoder hash="bcrypt"/>
+    </authentication-provider>
+  </authentication-manager>
+  <beans:bean id="myUserDetailsService" class="com.eventmanagement.service.MyUserDetailsService" />
+  <beans:bean id="customSuccessHandler" class="com.eventmanagement.security.CustomSuccessHandler" />
+</beans:beans>
